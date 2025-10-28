@@ -51,7 +51,18 @@ resource "azurerm_monitor_data_collection_rule_association" "vm_dcr_association"
   name                    = "${var.def_prefix}-vm-dcr-association"
   target_resource_id      = azurerm_linux_virtual_machine.ubuntu_vm.id
   data_collection_rule_id = azurerm_monitor_data_collection_rule.vm_dcr.id
+  depends_on = [
+    azurerm_virtual_machine_extension.azure_monitor_agent
+  ]
 }
+
+# Grant VM's managed identity permission to send data to DCR
+resource "azurerm_role_assignment" "vm_monitoring_metrics_publisher" {
+  scope                = azurerm_monitor_data_collection_rule.vm_dcr.id
+  role_definition_name = "Monitoring Metrics Publisher"
+  principal_id         = azurerm_linux_virtual_machine.ubuntu_vm.identity[0].principal_id
+}
+
 
 # Scheduled Query Alert Rule for SSH Login Detection
 resource "azurerm_monitor_scheduled_query_rules_alert_v2" "ssh_login_alert" {
