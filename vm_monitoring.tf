@@ -58,9 +58,14 @@ resource "azurerm_monitor_data_collection_rule_association" "vm_dcr_association"
 
 # Grant VM's managed identity permission to send data to DCR
 resource "azurerm_role_assignment" "vm_monitoring_metrics_publisher" {
+  count                = length(azurerm_linux_virtual_machine.ubuntu_vm.identity) > 0 ? 1 : 0
   scope                = azurerm_monitor_data_collection_rule.vm_dcr.id
   role_definition_name = "Monitoring Metrics Publisher"
   principal_id         = azurerm_linux_virtual_machine.ubuntu_vm.identity[0].principal_id
+  
+  depends_on = [
+    azurerm_linux_virtual_machine.ubuntu_vm
+  ]
 }
 
 
