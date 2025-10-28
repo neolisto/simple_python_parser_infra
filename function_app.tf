@@ -8,9 +8,11 @@ resource "azurerm_linux_function_app" "function_app" {
   functions_extension_version = "~4"
 
   app_settings = {
-    "AzureWebJobsStorage"      = azurerm_storage_account.function_app_storage_account.primary_connection_string
-    "FUNCTIONS_WORKER_RUNTIME" = "python"
-    "WEBSITE_RUN_FROM_PACKAGE" = "1"
+    "AzureWebJobsStorage"                   = azurerm_storage_account.function_app_storage_account.primary_connection_string
+    "FUNCTIONS_WORKER_RUNTIME"              = "python"
+    "WEBSITE_RUN_FROM_PACKAGE"              = "1"
+    "APPINSIGHTS_INSTRUMENTATIONKEY"        = azurerm_application_insights.function_app_ai.instrumentation_key
+    "APPLICATIONINSIGHTS_CONNECTION_STRING" = azurerm_application_insights.function_app_ai.connection_string
   }
 
   site_config {
