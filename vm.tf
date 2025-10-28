@@ -91,6 +91,10 @@ resource "azurerm_linux_virtual_machine" "ubuntu_vm" {
     version   = "latest"
   }
 
+  identity {
+    type = "SystemAssigned"
+  }
+
   disable_password_authentication = true
 }
 
